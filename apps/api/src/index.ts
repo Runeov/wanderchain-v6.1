@@ -77,3 +77,24 @@ app.listen({ port, host: '0.0.0.0' }).catch((e) => { app.log.error(e); process.e
 
 
 
+
+import { searchStub } from './graphql/resolvers/search.stub';
+
+// --- DEV: Attach searchStub resolvers after mercurius registration
+try {
+  // Fastify instance: app
+  // Mercurius exposes app.graphql.defineResolvers in runtime
+  // Guard to avoid throwing if not available
+  // @ts-ignore
+  if ((app as any)?.graphql?.defineResolvers) {
+    // @ts-ignore
+    (app as any).graphql.defineResolvers(searchStub);
+    app.log?.info("searchStub resolvers attached");
+  } else {
+    app.log?.warn("graphql.defineResolvers not available; ensure mercurius is registered before this block");
+  }
+} catch (err) {
+  // Keep server booting even if this stub fails
+  // @ts-ignore
+  app?.log?.error({ err }, "failed to attach searchStub resolvers");
+}
