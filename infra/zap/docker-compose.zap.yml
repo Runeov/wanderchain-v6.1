@@ -1,0 +1,9 @@
+version: '3.9'
+services:
+  zap:
+    image: zaproxy/zap-stable:latest
+    network_mode: "host"
+    volumes:
+      - ./output:/zap/wrk:rw
+    command: >
+      zap-baseline.py -t http://localhost:3000 -r zap-report.html -x zap-report.xml

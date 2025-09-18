@@ -1,0 +1,22 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm i -g pnpm@9
+      - run: pnpm i
+      - run: pnpm -F @pkg/shared build
+      - run: pnpm tsc:check
+      - run: pnpm build
+      - run: pnpm lint
+      - run: pnpm -r --if-present test
+      - run: docker compose up -d db redis
+      - run: pnpm setup
+      - run: pnpm dev & sleep 10
+      - run: curl --retry 5 --retry-delay 5 -sSf http://localhost:4000/healthz
+      - run: pnpm -C tests/e2e test
