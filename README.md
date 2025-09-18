@@ -37,3 +37,30 @@ Set in `.env`: `ENABLE_AMADEUS=true` and provide `AMADEUS_CLIENT_ID/SECRET` (Sel
 - `k6 run infra/k6/scale.js` — 1k VU load
 - `pnpm tsx infra/queues/flood.ts` — enqueue 10k provider jobs
 - `docker compose -f infra/zap/docker-compose.zap.yml up --exit-code-from zap` — ZAP baseline scan
+
+
+# Wonder / Wanderchain — Sprint: Metrics, Guardrails, CI
+
+This sprint adds:
+
+1. **Grafana monitoring** for API & Worker Prometheus metrics  
+2. **Provider guardrails** (Redis token-bucket + circuit breaker state in `/status/providers`)  
+3. **CI hardening** (install/build/typecheck, boot infra, smoke `/healthz` & `/status/providers`, tiny k6)
+
+> Success = Grafana shows live metrics, `/status/providers` shows breaker state, rate budgets prevent bursts, CI is green.
+
+---
+
+## 1) Monitoring: Prometheus + Grafana
+
+Self-contained docker-compose scrapes **API :4000** and **Worker :4001** for Prometheus and visualizes in Grafana.
+
+**Files**
+infra/monitoring/
+├─ docker-compose.grafana.yml
+├─ prometheus.yml
+└─ grafana/
+├─ provisioning/
+│ ├─ datasources/datasource.yaml
+│ └─ dashboards/dashboard.yaml
+└─ dashboards/wanderchain.json

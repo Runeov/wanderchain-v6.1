@@ -1,0 +1,11 @@
+﻿{
+  "id": null, "uid": "wanderchain", "title": "Wanderchain", "schemaVersion": 39, "version": 1, "refresh": "5s",
+  "panels": [
+    { "type":"stat","title":"API Requests/sec","datasource":"Prometheus",
+      "targets":[{ "expr":"sum(rate(http_requests_total{job=\"api\"}[1m]))"}],
+      "gridPos":{"h":6,"w":6,"x":0,"y":0} },
+    { "type":"stat","title":"Worker Jobs Completed/sec","datasource":"Prometheus",
+      "targets":[{ "expr":"sum(rate(jobs_completed_total{job=\"worker\"}[1m]))"}],
+      "gridPos":{"h":6,"w":6,"x":6,"y":0} }
+  ]
+}
