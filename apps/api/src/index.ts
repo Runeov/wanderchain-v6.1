@@ -10,6 +10,7 @@ import cookie from '@fastify/cookie';
 import * as dotenv from 'dotenv';
 import { createQueues } from './queues.js';
 import { authRoutes } from './routes/auth.js';
+import { statusRoutes } from './routes/status.js';
 import { register } from './metrics.js';
 dotenv.config();
 
@@ -37,6 +38,27 @@ await app.register(mercurius, {
 });
 
 await app.register(authRoutes);
+
+// Inline /status/providers route (no module import needed)
+app.get('/status/providers', async () => {
+  let q: any = (app as any).queues;
+  if (!q) { q = createQueues(); (app as any).queues = q; }
+  let redisOk = false;
+  try { redisOk = (await q.connection.ping()) === 'PONG'; } catch {}
+  const [ingest, enrich, providers] = await Promise.all([
+    q.ingest.getJobCounts(),
+    q.enrich.getJobCounts(),
+    q.providers.getJobCounts(),
+  ]);
+  return {
+    ok: true,
+    node: process.version,
+    fastify: app.version,
+    redis: redisOk,
+    queues: { ingest, enrich, providers }
+  };
+});
+await app.register(statusRoutes);
 createQueues();
 
 app.get('/healthz', async () => ({ ok: true }));
@@ -47,6 +69,11 @@ app.get('/metrics', async (req, reply) => {
 
 const port = Number(process.env.PORT || 4000);
 app.listen({ port, host: '0.0.0.0' }).catch((e) => { app.log.error(e); process.exit(1); });
+
+
+
+
+
 
 
 

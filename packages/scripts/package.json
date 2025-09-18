@@ -7,7 +7,7 @@
     "dev": "tsc -w -p tsconfig.json"
   },
   "dependencies": {
-    "@fastify/cookie": "^9",
+    "@fastify/cookie": "^10.0.1",
     "dotenv": "^16.4.5",
     "graphql-tag": "^2.12.6",
     "ioredis": "^5.5.0",

@@ -14,7 +14,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@fastify/cookie": "^9",
+    "@fastify/cookie": "^10.0.1",
     "@prisma/client": "^5.20.0",
     "graphql-tag": "^2.12.6"
   },

@@ -9,7 +9,7 @@
     "test:headed": "playwright test --headed"
   },
   "dependencies": {
-    "@fastify/cookie": "^9",
+    "@fastify/cookie": "^10.0.1",
     "graphql-tag": "^2.12.6"
   }
 }
